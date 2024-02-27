@@ -15,6 +15,8 @@ const app = express()                       // Creates an express server in app
  * Import routers and middleware
  */
 const morgan = require('morgan')
+const loginRouter = require('./routers/login')
+const personRouter = require('./routers/people')
 const basketRouter = require('./routers/baskets')
 const fruitRouter = require('./routers/fruits')
 
@@ -31,6 +33,8 @@ app.use(express.json())
  * Adding middleware and routes
  */
 app.use(morgan('dev'))
+app.use('/api/login', loginRouter)
+app.use('/api/people', personRouter)
 app.use('/api/baskets', basketRouter)
 app.use('/api/fruits', fruitRouter)
 

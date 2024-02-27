@@ -46,6 +46,11 @@ fruitRouter.post('/:id', async (request, response) => {
   const basketId = request.params.id
   const { name, sweet } = request.body
   // Error handling
+  if (!name || sweet === undefined) {
+    return response.status(400).send({
+      error: 'missing content in body'
+    })
+  }
   const basket = await Basket.findById(basketId)
   if (!basket) {
     return response.status(400).send({
