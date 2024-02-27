@@ -33,6 +33,4 @@ const closeConnection = async () => {
   }
 }
 
-makeConnection()
-
 module.exports = { makeConnection, closeConnection }
