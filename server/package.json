@@ -4,8 +4,8 @@
   "description": "Basic package setup for project",
   "main": "server.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=basic node server.js",
-    "dev": "cross-env NODE_ENV=basic nodemon server.js"
+    "start": "cross-env NODE_ENV=user node server.js",
+    "dev": "cross-env NODE_ENV=user nodemon server.js"
   },
   "keywords": [],
   "author": "Alem Tariq",
