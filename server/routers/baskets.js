@@ -73,16 +73,16 @@ basketRouter.post('/:id', async (request, response) => {
 /**
  * @receives a DELETE request to the URL: http://localhost:3001/api/basket/:id
  * Note: The :id required is the id of the BASKET we want to delete
- * You should pass the user id in the request body
+ * You should pass the person id in the request body
  * @returns an appropriate status code
  */
 basketRouter.delete('/:id', async (request, response) => {
   // Get fields
   const basketId = request.params.id
-  const { userId } = request.body
+  const { personId } = request.body
 
   // Check if the person exists
-  const person = await Person.findById(userId)
+  const person = await Person.findById(personId)
   if (!person) {
     return response.status(400).send({
       error: 'no such person exists to remove the basket from'
