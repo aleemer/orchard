@@ -90,7 +90,7 @@ basketRouter.delete('/:id', async (request, response) => {
   }
 
   // Get the fruits we need to remove and remove them
-  const fruitIds = (await Basket.findById(id)).fruits.map(id => id.toJSON())
+  const fruitIds = (await Basket.findById(basketId)).fruits.map(id => id.toJSON())
   await Promise.all(fruitIds.map(id => Fruit.findByIdAndDelete(id)))
   // Remove the basket on its own and from the user
   await Basket.findByIdAndDelete(basketId)
