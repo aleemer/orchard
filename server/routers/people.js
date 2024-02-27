@@ -74,7 +74,7 @@ peopleRouter.delete('/:id', async (request, response) => {
   // Get fruits to delete
   const baskets = await Promise.all(basketIds.map(id => Basket.findById(id)))
   const fruits = baskets.map(basket => basket.fruits)
-  const fruitIds = fruits.flat()
+  const fruitIds = fruits.flat().map(id => id.toJSON())
   // Perform deletions (person, baskets, fruits)
   await Person.findByIdAndDelete(id)
   await Promise.all(basketIds.map(id => Basket.findByIdAndDelete(id)))

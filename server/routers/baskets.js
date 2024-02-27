@@ -4,6 +4,7 @@ const basketRouter = express.Router()
 /**
  * Import mongoose models
  */
+const Person = require('../models/person')
 const Basket = require('../models/basket')
 const Fruit = require('../models/fruit')
 
@@ -37,11 +38,13 @@ basketRouter.get('/:id', async (request, response) => {
 })
 
 /**
- * @receives a POST request to the URL: http://localhost:3001/api/basket
+ * @receives a POST request to the URL: http://localhost:3001/api/basket:id
+ * Note: The :id required is the id of the PERSON the basket should belong to
  * @returns the newly created basket
  */
-basketRouter.post('/', async (request, response) => {
+basketRouter.post('/:id', async (request, response) => {
   // Get fields
+  const personId = request.params.id
   const { name } = request.body
   // Error handling
   if (!name) {
@@ -49,27 +52,50 @@ basketRouter.post('/', async (request, response) => {
       error: 'missing content in body'
     })
   }
-  // Create new basket
+  const user = await Person.findById(personId)
+  if (!user) {
+    return response.status(400).send({
+      error: 'no such user exists to add the basket to'
+    })
+  }
+  // Create new basket and save it
   const basket = new Basket({
     name
   })
-  // Update baskets and return resource
-  const basketResponse = await basket.save()
-  response.status(201).send(basketResponse)
+  const savedBasket = await basket.save()
+  // Add the basket to the user
+  user.baskets = user.baskets.concat(savedBasket._id)
+  await user.save()
+  // Return the saved basket
+  response.status(201).send(savedBasket)
 })
 
 /**
  * @receives a DELETE request to the URL: http://localhost:3001/api/basket/:id
  * Note: The :id required is the id of the BASKET we want to delete
+ * You should pass the user id in the request body
  * @returns an appropriate status code
  */
 basketRouter.delete('/:id', async (request, response) => {
-  const id = request.params.id
-  // Get fruits to delete
-  const fruits = (await Basket.findById(id)).fruits.map(id => id.toJSON())
-  // Perform deletions
-  await Basket.findByIdAndDelete(id)
-  await Promise.all(fruits.map(id => Fruit.findByIdAndDelete(id)))
+  // Get fields
+  const basketId = request.params.id
+  const { userId } = request.body
+
+  // Check if the person exists
+  const person = await Person.findById(userId)
+  if (!person) {
+    return response.status(400).send({
+      error: 'no such person exists to remove the basket from'
+    })
+  }
+
+  // Get the fruits we need to remove and remove them
+  const fruitIds = (await Basket.findById(id)).fruits.map(id => id.toJSON())
+  await Promise.all(fruitIds.map(id => Fruit.findByIdAndDelete(id)))
+  // Remove the basket on its own and from the user
+  await Basket.findByIdAndDelete(basketId)
+  person.baskets = person.baskets.filter(id => id.toJSON() !== basketId)
+  await person.save()
   response.status(200).send()
 })
 
