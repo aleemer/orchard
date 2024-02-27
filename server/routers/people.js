@@ -7,6 +7,7 @@ const peopleRouter = express.Router()
  */
 const Person = require('../models/person')
 const Basket = require('../models/basket')
+const Fruit = require('../models/fruit')
 
 /**
  * @receives a GET request to the URL: http://localhost:3001/api/people/about
@@ -69,10 +70,15 @@ peopleRouter.post('/', async (request, response) => {
 peopleRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
   // Get baskets to delete
-  const baskets = (await Person.findById(id)).baskets.map(id => id.toJSON())
-  // Perform deletions
+  const basketIds = (await Person.findById(id)).baskets.map(id => id.toJSON())
+  // Get fruits to delete
+  const baskets = await Promise.all(basketIds.map(id => Basket.findById(id)))
+  const fruits = baskets.map(basket => basket.fruits)
+  const fruitIds = fruits.flat()
+  // Perform deletions (person, baskets, fruits)
   await Person.findByIdAndDelete(id)
-  await Promise.all(baskets.map(id => Basket.findByIdAndDelete(id)))
+  await Promise.all(basketIds.map(id => Basket.findByIdAndDelete(id)))
+  await Promise.all(fruitIds.map(id => Fruit.findByIdAndDelete(id)))
   response.status(200).send()
 })
 
