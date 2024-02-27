@@ -15,6 +15,8 @@ const app = express()                       // Creates an express server in app
  * Import routers and middleware
  */
 const morgan = require('morgan')
+const basketRouter = require('./routers/baskets')
+const fruitRouter = require('./routers/fruits')
 
 
 /**
@@ -29,6 +31,8 @@ app.use(express.json())
  * Adding middleware and routes
  */
 app.use(morgan('dev'))
+app.use('/api/baskets', basketRouter)
+app.use('/api/fruits', fruitRouter)
 
 /**
  * Connect to database, start server & listen to server
