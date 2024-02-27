@@ -38,7 +38,7 @@ fruitRouter.get('/:id', async (request, response) => {
 
 /**
  * @receives a POST request to the URL: http://localhost:3001/api/fruit/:id
- * Note: The :id required is the id of the basket the fruit should belong to
+ * Note: The :id required is the id of the BASKET the fruit should belong to
  * @returns the newly created fruit
  */
 fruitRouter.post('/:id', async (request, response) => {
@@ -46,7 +46,7 @@ fruitRouter.post('/:id', async (request, response) => {
   const basketId = request.params.id
   const { name, sweet } = request.body
   // Error handling
-  const basket = Basket.findById(basketId)
+  const basket = await Basket.findById(basketId)
   if (!basket) {
     return response.status(400).send({
       error: 'no such basket exists to add the fruit to'
