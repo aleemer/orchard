@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 // Person schema
 const personSchema = new mongoose.Schema({
-  username: String,
+  name: String,
   passwordHash: String,
   baskets: [
     {

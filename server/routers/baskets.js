@@ -49,7 +49,7 @@ basketRouter.post('/', async (request, response) => {
       error: 'missing content in body'
     })
   }
-  // Create new entry
+  // Create new basket
   const basket = new Basket({
     name
   })
