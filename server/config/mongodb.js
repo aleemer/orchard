@@ -9,12 +9,13 @@ require('dotenv').config({ path: path.join(__dirname, '../.env')})
  */
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
+const helpers = require('../utils/helpers')
 
 /**
  * make and close connection functions
  */
 const makeConnection = async () => {
-  const databaseURL = process.env.ORCHARD_URI
+  const databaseURL = helpers.getURL()
   try {
     console.log(`connecting to... ${databaseURL}`)
     await mongoose
