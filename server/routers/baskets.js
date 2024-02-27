@@ -60,12 +60,13 @@ basketRouter.post('/', async (request, response) => {
 
 /**
  * @receives a DELETE request to the URL: http://localhost:3001/api/basket/:id
+ * Note: The :id required is the id of the BASKET we want to delete
  * @returns an appropriate status code
  */
 basketRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
   // Get fruits to delete
-  const fruits = await Basket.findById(id).fruits
+  const fruits = (await Basket.findById(id)).fruits.map(id => id.toJSON())
   console.log(fruits)
   response.status(200).send()
 })
