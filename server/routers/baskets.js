@@ -67,7 +67,9 @@ basketRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
   // Get fruits to delete
   const fruits = (await Basket.findById(id)).fruits.map(id => id.toJSON())
-  console.log(fruits)
+  // Perform deletions
+  await Basket.findByIdAndDelete(id)
+  await Promise.all(fruits.map(id => Fruit.findByIdAndDelete(id)))
   response.status(200).send()
 })
 
