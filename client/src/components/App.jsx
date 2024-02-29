@@ -41,9 +41,30 @@ const App = () => {
   }, [person])
   // Syncs baskets
   const syncBaskets = async () => {
-    const basketIds = person.baskets
+    const basketIds = (await personServices.getPerson(person.id)).baskets
     const data = await Promise.all(basketIds.map(id => basketServices.getBasket(id)))
     setBaskets(data)
+  }
+  // Makes a basket
+  const makeBasket = (e) => {
+    e.preventDefault()
+    // Grab relevant values
+    const name = e.target.basket.value
+    basketServices
+      .addBasket(person.id, { name })
+      .then(() => {
+        syncBaskets()
+        e.target.basket.value = ''
+      })
+      .catch((error) => console.log(error))
+  }
+  // Removes a basket
+  const disposeBasket = (e, basketId) => {
+    e.preventDefault()
+    basketServices
+      .removeBasket(person.id, basketId)
+      .then(() => syncBaskets())
+      .catch((error) => console.log(error))
   }
 
   /**
@@ -56,7 +77,6 @@ const App = () => {
       setPerson(storedPerson)
     }
   }, [])
-
   // Handles login, returns person if correct login
   const handleLogin = (person) => {
     login(person)
@@ -66,7 +86,6 @@ const App = () => {
       })
       .catch((error) => console.log(error.response.data.error))
   }
-
   // Handles account creation, returns person if valid
   const handleCreate = (newPerson) => {
     personServices
@@ -77,7 +96,6 @@ const App = () => {
       })
       .catch((error) => console.log(error.response.data.error))
   }
-
   // Handles logout, sets person to null
   const handleLogout = () => {
     browserServices.removePerson()
@@ -94,10 +112,18 @@ const App = () => {
           <ul>
             {baskets.map((basket) => (
               <li key={basket.id}>
-                <Link to={`/basket/${basket.id}`}><h3>{basket.name}</h3></Link>
+                <Link to={`/basket/${basket.id}`}>
+                  <h3>{basket.name}</h3>
+                </Link>
+                <button onClick={(e) => disposeBasket(e, basket.id)}>dispose</button>
               </li>
             ))}
           </ul>
+
+          <form onSubmit={makeBasket}>
+            <div><input placeholder="make a basket..." name="basket"/></div>
+            <button type="submit">make!</button>
+          </form>
 
           {/** Routes for redirect */}
           <Routes>

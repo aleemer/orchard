@@ -11,7 +11,7 @@ const getBasket = (basketId) => {
   return request.then(response => response.data)
 }
 
-const addBasket = (newBasket, personId) => {
+const addBasket = (personId, newBasket) => {
   const request = axios.post(`${baseURL}/${personId}`, newBasket)
   return request.then(response => response.data)
 }
