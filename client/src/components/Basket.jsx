@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 /**
  * Services imports
  */
+import basketServices from '../services/basket'
 import fruitServices from '../services/fruit'
 
 /**
@@ -24,8 +25,8 @@ const Basket = ({ basket }) => {
   }, [basket]) // forces re-sync when data sent in changes
   // Syncs fruits
   const syncFruits = async () => {
-    const fruitIds = basket.fruits
-    const data = await Promise.all(fruitIds.map(id => fruitServices.getOneFruit(id)))
+    const fruitIds = (await basketServices.getBasket(basket.id)).fruits                   // Need updated fruit ids (might have tossed or picked)
+    const data = await Promise.all(fruitIds.map(id => fruitServices.getOneFruit(id)))     // Fetch all the fruits
     setFruits(data)
   }
   // Adds another fruit
