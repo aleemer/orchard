@@ -51,6 +51,13 @@ peopleRouter.post('/', async (request, response) => {
       error: 'missing content in body'
     })
   }
+  // Check if person already exists
+  const duplicateCount = await Person.countDocuments({ name }).exec()
+  if (duplicateCount !== 0) {
+    return response.status(400).send({
+      error: 'name not available'
+    })
+  }
   // Perform hash
   const passwordHash = await bcrypt.hash(password, 10)
   // Create new person

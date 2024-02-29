@@ -18,7 +18,7 @@ const morgan = require('morgan')
 const loginRouter = require('./routers/login')
 const personRouter = require('./routers/people')
 const basketRouter = require('./routers/baskets')
-const fruitRouter = require('./routers/fruits')
+const fruitRouter = require('./routers/fruit')
 
 
 /**
@@ -36,7 +36,7 @@ app.use(morgan('dev'))
 app.use('/api/login', loginRouter)
 app.use('/api/people', personRouter)
 app.use('/api/baskets', basketRouter)
-app.use('/api/fruits', fruitRouter)
+app.use('/api/fruit', fruitRouter)
 
 /**
  * Connect to database, start server & listen to server
