@@ -11,7 +11,7 @@ const getOneFruit = (fruitId) => {
   return request.then(response => response.data)
 }
 
-const addFruit = (newFruit, basketId) => {
+const addFruit = (basketId, newFruit) => {
   const request = axios.post(`${baseURL}/${basketId}`, newFruit)
   return request.then(response => response.data)
 }

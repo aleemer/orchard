@@ -32,6 +32,16 @@ const Basket = ({ basket }) => {
   // Adds another fruit
   const pickFruit = (e) => {
     e.preventDefault()
+    // Grab relevant values
+    const name = e.target.fruit.value
+    const newFruit = { name, sweet: true }
+    fruitServices
+      .addFruit(basket.id, newFruit)
+      .then(() => {
+        syncFruits()
+        e.target.fruit.value = ''
+      })
+      .catch((error) => console.log(error))
   }
   // Removes an existing fruit
   const tossFruit = (e, fruitId) => {
@@ -50,6 +60,10 @@ const Basket = ({ basket }) => {
           <Fruit key={fruit.id} fruit={fruit} onToss={tossFruit} />
         ))}
       </ul>
+      <form onSubmit={pickFruit}>
+        <div><input placeholder="pick me..." name="fruit"/></div>
+        <button type="submit">pick!</button>
+      </form>
     </div>
   )
 }
