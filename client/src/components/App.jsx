@@ -1,3 +1,6 @@
+/**
+ * Necessary react imports
+ */
 import { useState, useEffect } from 'react'
 
 /**
