@@ -26,19 +26,23 @@ const App = () => {
   const [person, setPerson] = useState(null)
   const [baskets, setBaskets] = useState([])
 
+  console.log(person)
+  console.log(baskets)
+
   /**
    * Basket-relevant functions
    */
   useEffect(() => {
     if (person) {
-      syncBaskets(person.baskets)
+      syncBaskets()
     } else {
       setBaskets([])
     }
   }, [person])
   // Syncs baskets
-  const syncBaskets = async (baskets) => {
-    const data = await Promise.all(baskets.map(id => basketServices.getBasket(id)))
+  const syncBaskets = async () => {
+    const basketIds = person.baskets
+    const data = await Promise.all(basketIds.map(id => basketServices.getBasket(id)))
     setBaskets(data)
   }
 

@@ -15,18 +15,17 @@ import Fruit from './Fruit'
 
 const Basket = ({ basket }) => {
   const [fruits, setFruits] = useState([])
-
-  console.log(basket)
   
   /**
    * Fruit-relevant functions
    */
   useEffect(() => {
-    syncFruits(basket.fruits)
+    syncFruits()
   }, [basket]) // forces re-sync when data sent in changes
   // Syncs fruits
-  const syncFruits = async (fruits) => {
-    const data = await Promise.all(fruits.map(id => fruitServices.getOneFruit(id)))
+  const syncFruits = async () => {
+    const fruitIds = basket.fruits
+    const data = await Promise.all(fruitIds.map(id => fruitServices.getOneFruit(id)))
     setFruits(data)
   }
   // Adds another fruit
@@ -35,9 +34,6 @@ const Basket = ({ basket }) => {
   }
   // Removes an existing fruit
   const tossFruit = (e, fruitId) => {
-    console.log('basket id', basket.id)
-    console.log('fruit id', fruitId)
-
     e.preventDefault()
     fruitServices
       .removeFruit(basket.id, fruitId)
