@@ -14,4 +14,4 @@ const removePerson = () => {
   localStorage.removeItem("person")
 }
 
-export default { storeUser, getUser, removeUser }
+export default { storePerson, getPerson, removePerson }

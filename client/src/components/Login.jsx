@@ -25,6 +25,7 @@ const Login = ({ onLogin, onCreate, onLogout, person }) => {
       </div>
       :
       <div>
+        <h2>Login</h2>
         <form onSubmit={handleSubmit}>
           <div><input placeholder="name" name="name"/></div>
           <div><input placeholder="password" name="password" type="password"/></div>
