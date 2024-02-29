@@ -16,6 +16,8 @@ import Basket from './Basket'
 const App = () => {
   const [person, setPerson] = useState(null)
 
+  console.log(person)
+
   /**
    * User-relevant functions
    */
