@@ -40,9 +40,11 @@ import './index.css'
  * Render App with first starting route
  */
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Router>
-    <Routes>
-      <Route path="*" element={<App />}/>
-    </Routes>
-  </Router>
+  <Provider store={store}>
+    <Router>
+      <Routes>
+        <Route path="*" element={<App />}/>
+      </Routes>
+    </Router>
+  </Provider>
 )
