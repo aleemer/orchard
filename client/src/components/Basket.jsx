@@ -1,4 +1,6 @@
-const Basket = () => {
+const Basket = ({ basketId }) => {
+  console.log(basketId)
+  
   return (
     <div>
       

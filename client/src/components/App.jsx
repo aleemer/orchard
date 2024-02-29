@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react'
  */
 import browserServices from '../services/browser'
 import personServices from '../services/person'
+import basketServices from '../services/basket'
 import login from '../services/login'
 
 /**
@@ -20,11 +21,24 @@ import Basket from './Basket'
 
 const App = () => {
   const [person, setPerson] = useState(null)
-
-  console.log(person)
+  const [baskets, setBaskets] = useState([])
 
   /**
-   * User-relevant functions
+   * Basket-relevant functions
+   */
+  useEffect(() => {
+    if (person) {
+      syncBaskets(person.baskets)
+    }
+  }, [person])
+  // Syncs baskets
+  const syncBaskets = async (baskets) => {
+    const data = await Promise.all(baskets.map(id => basketServices.getBasket(id)))
+    setBaskets(data)
+  }
+
+  /**
+   * Person-relevant functions
    */
   // Performs local storage check to auto-login on reload
   useEffect(() => {
