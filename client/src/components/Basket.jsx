@@ -1,5 +1,5 @@
-const Basket = ({ basketId }) => {
-  console.log(basketId)
+const Basket = ({ basket }) => {
+  console.log(basket)
   
   return (
     <div>

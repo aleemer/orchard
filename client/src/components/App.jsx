@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 /**
  * Necessary router imports
  */
-
+import { Routes, Route, Link } from 'react-router-dom'
 
 /**
  * Services imports
@@ -29,6 +29,8 @@ const App = () => {
   useEffect(() => {
     if (person) {
       syncBaskets(person.baskets)
+    } else {
+      setBaskets([])
     }
   }, [person])
   // Syncs baskets
@@ -79,6 +81,25 @@ const App = () => {
     <div>
       <h1>Orchard</h1>
       <Login onLogin={handleLogin} onCreate={handleCreate} onLogout={handleLogout} person={person}/>
+      {person && (
+        <div>
+          <h2>Your Baskets: </h2>
+          <ul>
+            {baskets.map((basket) => (
+              <li key={basket.id}>
+                <Link to={`/basket/${basket.id}`}><h3>{basket.name}</h3></Link>
+              </li>
+            ))}
+          </ul>
+
+          {/** Routes for redirect */}
+          <Routes>
+            {baskets.map((basket) => (
+              <Route key={basket.id} path={`/basket/${basket.id}`} element={<Basket basket={basket}/>} />
+            ))}
+          </Routes>
+        </div>
+      )}
     </div>
   )
 }
