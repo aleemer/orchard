@@ -17,7 +17,7 @@ const addFruit = (newFruit, basketId) => {
 }
 
 const removeFruit = (basketId, fruitId) => {
-  const request = axios.delete(`${baseURL}/${fruitId}`, { basketId } )
+  const request = axios.delete(`${baseURL}/${fruitId}`, { data: { basketId } } )
   return request.then(response => response.data)
 }
 

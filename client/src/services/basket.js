@@ -17,7 +17,7 @@ const addBasket = (newBasket, personId) => {
 }
 
 const removeBasket = (personId, basketId) => {
-  const request = axios.delete(`${baseURL}/${basketId}`, { personId })
+  const request = axios.delete(`${baseURL}/${basketId}`, { data: { personId } })
   return request.then(response => response.data)
 }
 
