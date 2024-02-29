@@ -3,7 +3,7 @@ const Basket = ({ basket }) => {
   
   return (
     <div>
-      
+      <p>Here's the contents of {basket.name} </p>
     </div>
   )
 }
