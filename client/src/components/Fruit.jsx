@@ -1,8 +1,8 @@
-const Fruit = () => {
+const Fruit = ({ fruit }) => {
   return (
-    <div>
-      
-    </div>
+    <li key={fruit.id}>
+      <p>{fruit.name}</p>
+    </li>
   )
 }
 

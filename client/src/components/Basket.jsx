@@ -33,9 +33,7 @@ const Basket = ({ basket }) => {
       <p>Here's the contents of <strong>{basket.name}</strong></p>
       <ul>
         {fruits.map((fruit) => (
-          <li key={fruit.id}>
-            <p>{fruit.name}</p>
-          </li>
+          <Fruit key={fruit.id} fruit={fruit} />
         ))}
       </ul>
     </div>
