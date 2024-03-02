@@ -76,23 +76,11 @@ const App = () => {
   useEffect(() => {
     dispatch(getCookie())
   }, [])
-  // Handles login, returns person if correct login
-  const handleLogin = (person) => {
-    dispatch(loginPerson(person))
-  }
-  // Handles account creation, returns person if valid
-  const handleCreate = (newPerson) => {
-    dispatch(addPerson(newPerson))
-  }
-  // Handles logout, sets person to null
-  const handleLogout = () => {
-    dispatch(logoutPerson())
-  }
 
   return (
     <div>
       <h1>Orchard</h1>
-      <Login onLogin={handleLogin} onCreate={handleCreate} onLogout={handleLogout} person={person}/>
+      <Login person={person}/>
       {person && (
         <div>
           <h2>Your Baskets: </h2>
