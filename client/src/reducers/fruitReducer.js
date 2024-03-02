@@ -46,7 +46,7 @@ export const addFruit = (basketId, newFruit) => {
 }
 
 // Redux-thunk action that removes a fruit, and updates store
-export const deleteFruit = (basketId, fruitId) => {
+export const tossFruit = (basketId, fruitId) => {
   return async dispatch => {
     await fruitServices.removeFruit(basketId, fruitId)
     dispatch(removeFruit(fruitId))

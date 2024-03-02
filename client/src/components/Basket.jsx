@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
  * Necessary Redux imports
  */
 import { useDispatch, useSelector } from 'react-redux'
-import { setFruits, initializeFruits, addFruit, deleteFruit } from '../reducers/fruitReducer'
+import { setFruits, initializeFruits, addFruit } from '../reducers/fruitReducer'
 
 
 /**
@@ -18,7 +18,6 @@ import Fruit from './Fruit'
 const Basket = ({ basket }) => {
   const dispatch = useDispatch()
   const fruits = useSelector((store) => store.fruit)
-  console.log(fruits)
   
   /**
    * First-load checks
@@ -41,18 +40,13 @@ const Basket = ({ basket }) => {
     const newFruit = { name, sweet: true }
     dispatch(addFruit(basket.id, newFruit))
   }
-  // Removes an existing fruit
-  const tossFruit = (e, fruitId) => {
-    e.preventDefault()
-    dispatch(deleteFruit(basket.id, fruitId))
-  }
   
   return (
     <div>
       <p>Here's the contents of <strong>{basket.name}</strong></p>
       <ul>
         {fruits.map((fruit) => (
-          <Fruit key={fruit.id} fruit={fruit} onToss={tossFruit} />
+          <Fruit key={fruit.id} basket={basket} fruit={fruit} />
         ))}
       </ul>
       <form onSubmit={pickFruit}>

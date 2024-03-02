@@ -26,7 +26,7 @@ const basketSlice = createSlice({
 })
 
 // Necessary to make available for thunk actions
-export const { setBaskets } = basketSlice.actions
+export const { setBaskets, appendBasket, removeBasket } = basketSlice.actions
 
 // Redux-thunk action that initializes baskets (on login)
 export const initializeBaskets = (personId) => {
@@ -46,7 +46,7 @@ export const weaveBasket = (personId, newBasket) => {
 }
 
 // Redux-thunk action that deletes a basket, and updates store
-export const removeBasket = (personId, basketId) => {
+export const deleteBasket = (personId, basketId) => {
   return async dispatch => {
     await basketServices.removeBasket(personId, basketId)
     dispatch(removeBasket(basketId))

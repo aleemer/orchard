@@ -13,7 +13,7 @@ import { Routes, Route, Link } from 'react-router-dom'
  */
 import { useDispatch, useSelector } from 'react-redux'
 import { getCookie } from '../reducers/personReducer'
-import { setBaskets, initializeBaskets, weaveBasket, removeBasket } from '../reducers/basketReducer'
+import { setBaskets, initializeBaskets, weaveBasket, deleteBasket } from '../reducers/basketReducer'
 
 /**
  * Component imports
@@ -54,7 +54,7 @@ const App = () => {
   // Removes a basket
   const disposeBasket = (e, basketId) => {
     e.preventDefault()
-    dispatch(removeBasket(person.id, basketId))
+    dispatch(deleteBasket(person.id, basketId))
   }
 
   
