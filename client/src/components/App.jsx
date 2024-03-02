@@ -12,7 +12,7 @@ import { Routes, Route, Link } from 'react-router-dom'
  * Necessary Redux imports
  */
 import { useDispatch, useSelector } from 'react-redux'
-import { logoutPerson, storeCookie, getCookie, addPerson, loginPerson, fetchPerson } from '../reducers/personReducer'
+import { getCookie, fetchPerson } from '../reducers/personReducer'
 
 
 /**

@@ -1,3 +1,5 @@
+import { createSlice } from '@reduxjs/toolkit'
+
 /**
  * Services imports
  */
@@ -5,7 +7,6 @@ import browserServices from '../services/browser'
 import personServices from '../services/person'
 import login from '../services/login'
 
-import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = null
 
@@ -54,7 +55,7 @@ export const loginPerson = (person) => {
   }
 }
 
-// Redux-thunk action for fetching person (necessary after creations)
+// Redux-thunk action for fetching person (if needed, performs update)
 export const fetchPerson = (personId) => {
   return async dispatch => {
     const fetchPerson = await personServices.getPerson(personId)
