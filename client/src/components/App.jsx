@@ -1,7 +1,7 @@
 /**
  * Necessary react imports
  */
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 /**
  * Necessary router imports
@@ -49,14 +49,12 @@ const App = () => {
     // Grab relevant values
     const name = e.target.basket.value
     dispatch(weaveBasket(person.id, { name }))
-    dispatch(initializeBaskets(person.id))
   }
 
   // Removes a basket
   const disposeBasket = (e, basketId) => {
     e.preventDefault()
     dispatch(removeBasket(person.id, basketId))
-    dispatch(initializeBaskets(person.id))
   }
 
   
