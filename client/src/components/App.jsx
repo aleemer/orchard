@@ -9,12 +9,16 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
 
 /**
+ * Necessary Redux imports
+ */
+import { useDispatch, useSelector } from 'react-redux'
+import { logoutPerson, storeCookie, getCookie, addPerson, loginPerson, fetchPerson } from '../reducers/personReducer'
+
+
+/**
  * Services imports
  */
-import browserServices from '../services/browser'
-import personServices from '../services/person'
 import basketServices from '../services/basket'
-import login from '../services/login'
 
 /**
  * Component imports
@@ -23,11 +27,9 @@ import Login from './Login'
 import Basket from './Basket'
 
 const App = () => {
-  const [person, setPerson] = useState(null)
+  const dispatch = useDispatch()
+  const person = useSelector((store) => store.person)
   const [baskets, setBaskets] = useState([])
-
-  console.log(person)
-  console.log(baskets)
 
   /**
    * Basket-relevant functions
@@ -72,34 +74,19 @@ const App = () => {
    */
   // Performs local storage check to auto-login on reload
   useEffect(() => {
-    const storedPerson = browserServices.getPerson()
-    if (storedPerson) {
-      setPerson(storedPerson)
-    }
+    dispatch(getCookie())
   }, [])
   // Handles login, returns person if correct login
   const handleLogin = (person) => {
-    login(person)
-      .then((response) => {
-        setPerson(response)
-        browserServices.storePerson(response)
-      })
-      .catch((error) => console.log(error.response.data.error))
+    dispatch(loginPerson(person))
   }
   // Handles account creation, returns person if valid
   const handleCreate = (newPerson) => {
-    personServices
-      .addPerson(newPerson)
-      .then((response) => {
-        setPerson(response)
-        browserServices.storePerson(response)
-      })
-      .catch((error) => console.log(error.response.data.error))
+    dispatch(addPerson(newPerson))
   }
   // Handles logout, sets person to null
   const handleLogout = () => {
-    browserServices.removePerson()
-    setPerson(null)
+    dispatch(logoutPerson())
   }
 
   return (

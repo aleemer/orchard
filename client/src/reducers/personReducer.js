@@ -17,6 +17,7 @@ const personSlice = createSlice({
       return action.payload
     },
     logoutPerson (state, action) {
+      browserServices.removePerson()
       return null
     },
     storeCookie (state, action) {
@@ -24,8 +25,11 @@ const personSlice = createSlice({
       return state
     },
     getCookie (state, action) {
-      return browserServices.getPerson()
-    },
+      const person = browserServices.getPerson()
+      if (person) {
+        return person
+      }
+    }
   }
 })
 
@@ -37,14 +41,16 @@ export const addPerson = (person) => {
   return async dispatch => {
     const savedPerson = await personServices.addPerson(person)
     dispatch(setPerson(savedPerson))
+    dispatch(storeCookie(savedPerson))
   }
 }
 
 // Redux-thunk action that performs a login, and updates store
-export const handleLogin = (person) => {
+export const loginPerson = (person) => {
   return async dispatch => {
     const loginPerson = await login(person)
     dispatch(setPerson(loginPerson))
+    dispatch(storeCookie(loginPerson))
   }
 }
 
