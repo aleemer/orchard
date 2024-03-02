@@ -33,7 +33,7 @@ export const initializeBaskets = (personId) => {
   return async dispatch => {
     const basketIds = (await personServices.getPerson(personId)).baskets
     const data = await Promise.all(basketIds.map(id => basketServices.getBasket(id)))
-    setBaskets(data)
+    dispatch(setBaskets(data))
   }
 }
 
