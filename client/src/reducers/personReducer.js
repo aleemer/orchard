@@ -1,6 +1,7 @@
 /**
  * Services imports
  */
+import browserServices from '../services/browser'
 import personServices from '../services/person'
 import login from '../services/login'
 
@@ -12,31 +13,48 @@ const personSlice = createSlice({
   name: 'person',
   initialState,
   reducers: {
-    updatePerson(state, action) {
-      state = action.payload
-    }
+    setPerson (state, action) {
+      return action.payload
+    },
+    logoutPerson (state, action) {
+      return null
+    },
+    storeCookie (state, action) {
+      browserServices.storePerson(action.payload)
+      return state
+    },
+    getCookie (state, action) {
+      return browserServices.getPerson()
+    },
   }
 })
 
-export const addPerson = (newPerson) => {
+// Necessary to make available for thunk actions
+export const { setPerson, logoutPerson, storeCookie, getCookie } = personSlice.actions
+
+// Redux-thunk action that creates a person, and updates store
+export const addPerson = (person) => {
   return async dispatch => {
-    const savedPerson = await personServices.addPerson(newPerson)
-    dispatch(updatePerson(savedPerson))
+    const savedPerson = await personServices.addPerson(person)
+    dispatch(setPerson(savedPerson))
   }
 }
 
-export const loginPerson = (person) => {
+// Redux-thunk action that performs a login, and updates store
+export const handleLogin = (person) => {
   return async dispatch => {
     const loginPerson = await login(person)
-    dispatch(updatePerson(loginPerson))
+    dispatch(setPerson(loginPerson))
   }
 }
 
-export const getPerson = (id) => {
+// Redux-thunk action for fetching person (necessary after creations)
+export const fetchPerson = (personId) => {
   return async dispatch => {
-    const person = await personServices.getPerson(id)
-    dispatch(updatePerson(person))
+    const fetchPerson = await personServices.getPerson(personId)
+    dispatch(setPerson(fetchPerson))
   }
 }
+
 
 export default personSlice.reducer
