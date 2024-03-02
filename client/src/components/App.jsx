@@ -1,7 +1,7 @@
 /**
  * Necessary react imports
  */
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 /**
  * Necessary router imports
@@ -9,12 +9,11 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
 
 /**
- * Services imports
+ * Necessary Redux imports
  */
-import browserServices from '../services/browser'
-import personServices from '../services/person'
-import basketServices from '../services/basket'
-import login from '../services/login'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCookie } from '../reducers/personReducer'
+import { setBaskets, initializeBaskets, weaveBasket, deleteBasket } from '../reducers/basketReducer'
 
 /**
  * Component imports
@@ -23,89 +22,47 @@ import Login from './Login'
 import Basket from './Basket'
 
 const App = () => {
-  const [person, setPerson] = useState(null)
-  const [baskets, setBaskets] = useState([])
-
-  console.log(person)
-  console.log(baskets)
+  const dispatch = useDispatch()
+  const person = useSelector((store) => store.person)
+  const baskets = useSelector((store) => store.baskets)
 
   /**
-   * Basket-relevant functions
+   * First-load checks
    */
+  // Performs local storage check to auto-login on reload
+  useEffect(() => {
+    dispatch(getCookie())
+  }, [])
+  // Initializes baskets if person is logged in
   useEffect(() => {
     if (person) {
-      syncBaskets()
+      dispatch(initializeBaskets(person.id))
     } else {
-      setBaskets([])
+      dispatch(setBaskets([]))
     }
   }, [person])
-  // Syncs baskets
-  const syncBaskets = async () => {
-    const basketIds = (await personServices.getPerson(person.id)).baskets
-    const data = await Promise.all(basketIds.map(id => basketServices.getBasket(id)))
-    setBaskets(data)
-  }
+
+  
   // Makes a basket
   const makeBasket = (e) => {
     e.preventDefault()
     // Grab relevant values
     const name = e.target.basket.value
-    basketServices
-      .addBasket(person.id, { name })
-      .then(() => {
-        syncBaskets()
-        e.target.basket.value = ''
-      })
-      .catch((error) => console.log(error))
+    dispatch(weaveBasket(person.id, { name }))
   }
+
   // Removes a basket
   const disposeBasket = (e, basketId) => {
     e.preventDefault()
-    basketServices
-      .removeBasket(person.id, basketId)
-      .then(() => syncBaskets())
-      .catch((error) => console.log(error))
+    dispatch(deleteBasket(person.id, basketId))
   }
 
-  /**
-   * Person-relevant functions
-   */
-  // Performs local storage check to auto-login on reload
-  useEffect(() => {
-    const storedPerson = browserServices.getPerson()
-    if (storedPerson) {
-      setPerson(storedPerson)
-    }
-  }, [])
-  // Handles login, returns person if correct login
-  const handleLogin = (person) => {
-    login(person)
-      .then((response) => {
-        setPerson(response)
-        browserServices.storePerson(response)
-      })
-      .catch((error) => console.log(error.response.data.error))
-  }
-  // Handles account creation, returns person if valid
-  const handleCreate = (newPerson) => {
-    personServices
-      .addPerson(newPerson)
-      .then((response) => {
-        setPerson(response)
-        browserServices.storePerson(response)
-      })
-      .catch((error) => console.log(error.response.data.error))
-  }
-  // Handles logout, sets person to null
-  const handleLogout = () => {
-    browserServices.removePerson()
-    setPerson(null)
-  }
+  
 
   return (
     <div>
       <h1>Orchard</h1>
-      <Login onLogin={handleLogin} onCreate={handleCreate} onLogout={handleLogout} person={person}/>
+      <Login person={person}/>
       {person && (
         <div>
           <h2>Your Baskets: </h2>

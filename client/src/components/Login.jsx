@@ -1,4 +1,13 @@
-const Login = ({ onLogin, onCreate, onLogout, person }) => {
+/**
+ * Necessary Redux imports
+ */
+import { useDispatch } from 'react-redux'
+import { addPerson, loginPerson, logoutPerson } from '../reducers/personReducer'
+
+const Login = ({ person }) => {
+  // For dispatching actions
+  const dispatch = useDispatch()
+
   // Handle either button click
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -10,9 +19,9 @@ const Login = ({ onLogin, onCreate, onLogout, person }) => {
     // distinguish button click
     const clickType = e.nativeEvent.submitter.value
     if (clickType === 'login') {
-      onLogin(person)
+      dispatch(loginPerson(person))
     } else {
-      onCreate(person)
+      dispatch(addPerson(person))
     }
   }
 
@@ -21,7 +30,7 @@ const Login = ({ onLogin, onCreate, onLogout, person }) => {
       {person ? 
       <div>
         <p><strong>{person.name}</strong> has logged in. </p>
-        <button onClick={onLogout}>logout</button>
+        <button onClick={(e) => dispatch(logoutPerson())}>logout</button>
       </div>
       :
       <div>
