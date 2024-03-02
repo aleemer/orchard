@@ -12,13 +12,8 @@ import { Routes, Route, Link } from 'react-router-dom'
  * Necessary Redux imports
  */
 import { useDispatch, useSelector } from 'react-redux'
-import { getCookie, fetchPerson } from '../reducers/personReducer'
-
-
-/**
- * Services imports
- */
-import basketServices from '../services/basket'
+import { getCookie } from '../reducers/personReducer'
+import { setBaskets, initializeBaskets, weaveBasket, removeBasket } from '../reducers/basketReducer'
 
 /**
  * Component imports
@@ -29,53 +24,42 @@ import Basket from './Basket'
 const App = () => {
   const dispatch = useDispatch()
   const person = useSelector((store) => store.person)
-  const [baskets, setBaskets] = useState([])
+  const baskets = useSelector((store) => store.baskets)
 
   /**
-   * Basket-relevant functions
-   */
-  useEffect(() => {
-    if (person) {
-      syncBaskets()
-    } else {
-      setBaskets([])
-    }
-  }, [person])
-  // Syncs baskets
-  const syncBaskets = async () => {
-    const basketIds = (await personServices.getPerson(person.id)).baskets
-    const data = await Promise.all(basketIds.map(id => basketServices.getBasket(id)))
-    setBaskets(data)
-  }
-  // Makes a basket
-  const makeBasket = (e) => {
-    e.preventDefault()
-    // Grab relevant values
-    const name = e.target.basket.value
-    basketServices
-      .addBasket(person.id, { name })
-      .then(() => {
-        syncBaskets()
-        e.target.basket.value = ''
-      })
-      .catch((error) => console.log(error))
-  }
-  // Removes a basket
-  const disposeBasket = (e, basketId) => {
-    e.preventDefault()
-    basketServices
-      .removeBasket(person.id, basketId)
-      .then(() => syncBaskets())
-      .catch((error) => console.log(error))
-  }
-
-  /**
-   * Person-relevant functions
+   * First-load checks
    */
   // Performs local storage check to auto-login on reload
   useEffect(() => {
     dispatch(getCookie())
   }, [])
+  // Initializes baskets if person is logged in
+  useEffect(() => {
+    if (person) {
+      dispatch(initializeBaskets(person.id))
+    } else {
+      dispatch(setBaskets([]))
+    }
+  }, [person])
+
+  
+  // Makes a basket
+  const makeBasket = (e) => {
+    e.preventDefault()
+    // Grab relevant values
+    const name = e.target.basket.value
+    dispatch(weaveBasket(person.id, { name }))
+    dispatch(initializeBaskets(person.id))
+  }
+
+  // Removes a basket
+  const disposeBasket = (e, basketId) => {
+    e.preventDefault()
+    dispatch(removeBasket(person.id, basketId))
+    dispatch(initializeBaskets(person.id))
+  }
+
+  
 
   return (
     <div>

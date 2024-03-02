@@ -13,14 +13,14 @@ const basketSlice = createSlice({
   initialState,
   reducers: {
     setBaskets (state, action) {
-      return state
+      return action.payload
     },
     appendBasket (state, action) {
       return state.concat(action.payload)
     },
     removeBasket (state, action) {
       const id = action.payload.basketId
-      return state.map(basket => basket.id !== id)
+      return state.filter(basket => basket.id !== id)
     }
   }
 })
@@ -38,7 +38,7 @@ export const initializeBaskets = (personId) => {
 }
 
 // Redux-thunk action that creates a basket, and updates store
-export const makeBasket = (personId, newBasket) => {
+export const weaveBasket = (personId, newBasket) => {
   return async dispatch => {
     const savedBasket = await basketServices.addBasket(personId, newBasket)
     dispatch(appendBasket(savedBasket))
