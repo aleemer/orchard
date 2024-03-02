@@ -9,7 +9,7 @@ import fruitServices from '../services/fruit'
 const initialState = []
 
 const fruitSlice = createSlice({
-  name: 'fruits',
+  name: 'fruit',
   initialState,
   reducers: {
     setFruits (state, action) {
@@ -29,16 +29,16 @@ const fruitSlice = createSlice({
 export const { setFruits, appendFruit, removeFruit } = fruitSlice.actions
 
 // Redux-thunk action that initializes fruits (on-click to page)
-const initializeFruits = (basketId) => {
+export const initializeFruits = (basketId) => {
   return async dispatch => {
-    const fruitIds = (await basketServices.getBasket(basketId))
+    const fruitIds = (await basketServices.getBasket(basketId)).fruits
     const data = await Promise.all(fruitIds.map(id => fruitServices.getOneFruit(id)))
     dispatch(setFruits(data))
   }
 }
 
 // Redux-thunk action that creates a fruit, and updates store
-const addFruit = (basketId, newFruit) => {
+export const addFruit = (basketId, newFruit) => {
   return async dispatch => {
     const savedFruit = await fruitServices.addFruit(basketId, newFruit)
     dispatch(appendFruit(savedFruit))
@@ -46,7 +46,7 @@ const addFruit = (basketId, newFruit) => {
 }
 
 // Redux-thunk action that removes a fruit, and updates store
-const tossFruit = (basketId, fruitId) => {
+export const deleteFruit = (basketId, fruitId) => {
   return async dispatch => {
     await fruitServices.removeFruit(basketId, fruitId)
     dispatch(removeFruit(fruitId))
