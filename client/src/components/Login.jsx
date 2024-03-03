@@ -1,15 +1,21 @@
 /**
+ * Services imports
+ */
+import personServices from '../services/person'
+import login from '../services/login'
+
+/**
  * Necessary Redux imports
  */
 import { useDispatch } from 'react-redux'
-import { addPerson, loginPerson, logoutPerson } from '../reducers/personReducer'
+import { setPerson, logoutPerson, storeCookie } from '../reducers/personReducer'
 
 const Login = ({ person }) => {
   // For dispatching actions
   const dispatch = useDispatch()
 
   // Handle either button click
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     // Grab relevant values
     const person = {
@@ -19,9 +25,13 @@ const Login = ({ person }) => {
     // distinguish button click
     const clickType = e.nativeEvent.submitter.value
     if (clickType === 'login') {
-      dispatch(loginPerson(person))
+      const loginPerson = await login(person)
+      dispatch(setPerson(loginPerson))
+      dispatch(storeCookie(loginPerson))
     } else {
-      dispatch(addPerson(person))
+      const savedPerson = await personServices.addPerson(person)
+      dispatch(setPerson(savedPerson))
+      dispatch(storeCookie(savedPerson))
     }
   }
 
