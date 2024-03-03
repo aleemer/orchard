@@ -1,14 +1,19 @@
 /**
  * Necessary react imports
  */
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 
 /**
  * Necessary Redux imports
  */
 import { useDispatch, useSelector } from 'react-redux'
-import { setFruits, initializeFruits, addFruit } from '../reducers/fruitReducer'
+import { setFruits, appendFruit } from '../reducers/fruitReducer'
 
+/**
+ * Services imports
+ */
+import basketServices from '../services/basket'
+import fruitServices from '../services/fruit'
 
 /**
  * Component imports
@@ -25,20 +30,26 @@ const Basket = ({ basket }) => {
   // Initializes fruit if basket is available
   useEffect(() => {
     if (basket) {
-      dispatch(initializeFruits(basket.id))
+      syncFruits()
     } else {
       dispatch(setFruits([]))
     }
   }, [basket]) // forces re-sync when data sent in changes
+  const syncFruits = async () => {
+    const fruitIds = (await basketServices.getBasket(basket.id)).fruits
+    const data = await Promise.all(fruitIds.map(id => fruitServices.getOneFruit(id)))
+    dispatch(setFruits(data))
+  }
 
   // Adds another fruit
-  const pickFruit = (e) => {
+  const pickFruit = async (e) => {
     e.preventDefault()
     // Grab relevant values
     const name = e.target.fruit.value
     e.target.fruit.value = ''
     const newFruit = { name, sweet: true }
-    dispatch(addFruit(basket.id, newFruit))
+    const savedFruit = await fruitServices.addFruit(basket.id, newFruit)
+    dispatch(appendFruit(savedFruit))
   }
   
   return (
