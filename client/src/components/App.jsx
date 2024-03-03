@@ -13,7 +13,14 @@ import { Routes, Route, Link } from 'react-router-dom'
  */
 import { useDispatch, useSelector } from 'react-redux'
 import { getCookie } from '../reducers/personReducer'
-import { setBaskets, initializeBaskets, weaveBasket, deleteBasket } from '../reducers/basketReducer'
+import { setBaskets, appendBasket, removeBasket } from '../reducers/basketReducer'
+
+/**
+ * Services imports
+ */
+import personServices from '../services/person'
+import basketServices from '../services/basket'
+
 
 /**
  * Component imports
@@ -36,25 +43,32 @@ const App = () => {
   // Initializes baskets if person is logged in
   useEffect(() => {
     if (person) {
-      dispatch(initializeBaskets(person.id))
+      syncBaskets()
     } else {
       dispatch(setBaskets([]))
     }
   }, [person])
+  const syncBaskets = async () => {
+    const basketIds = (await personServices.getPerson(person.id)).baskets
+    const data = await Promise.all(basketIds.map(id => basketServices.getBasket(id)))
+    dispatch(setBaskets(data))
+  }
 
   
   // Makes a basket
-  const makeBasket = (e) => {
+  const makeBasket = async (e) => {
     e.preventDefault()
     // Grab relevant values
     const name = e.target.basket.value
-    dispatch(weaveBasket(person.id, { name }))
+    const savedBasket = await basketServices.addBasket(person.id, { name })
+    dispatch(appendBasket(savedBasket))
   }
 
   // Removes a basket
-  const disposeBasket = (e, basketId) => {
+  const disposeBasket = async (e, basketId) => {
     e.preventDefault()
-    dispatch(deleteBasket(person.id, basketId))
+    await basketServices.removeBasket(person.id, basketId)
+    dispatch(removeBasket(basketId))
   }
 
   
